@@ -1,11 +1,14 @@
 package com.toytanik.ims.service;
 
+import com.toytanik.ims.ImsErrorCode;
+import com.toytanik.ims.exceptions.ImsExceptions;
 import com.toytanik.ims.model.User;
 import com.toytanik.ims.model.UserRequest;
 import com.toytanik.ims.model.UserResponse;
 import com.toytanik.ims.repository.UserRepository;
 import com.toytanik.ims.assembler.UserAssembler;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,9 +22,13 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    @SneakyThrows
     public UserResponse createUser(UserRequest userRequest) {
         UserAssembler userAssembler = new UserAssembler();
         User user = userAssembler.writeEntity(userRequest);
+        if(userRepository.existsByEmail(user.getEmail())) {
+            throw new ImsExceptions(ImsErrorCode.EMAIL_ALREADY_EXIST);
+        }
         userRepository.save(user);
 
         return userAssembler.writeRegistrationResponse(user);

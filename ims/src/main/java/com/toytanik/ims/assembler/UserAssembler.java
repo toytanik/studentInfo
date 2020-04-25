@@ -3,14 +3,17 @@ package com.toytanik.ims.assembler;
 import com.toytanik.ims.model.User;
 import com.toytanik.ims.model.UserRequest;
 import com.toytanik.ims.model.UserResponse;
+import com.toytanik.ims.validator.UserValidator;
 
 public class UserAssembler {
+
+
     public User writeEntity(UserRequest userRequest) {
         User user = new User();
-
-        user.setName(userRequest.getName().toLowerCase());
-        user.setSurname(userRequest.getSurname().toLowerCase());
-        user.setEmail(userRequest.getEmail().toLowerCase());
+        UserValidator userValidator = new UserValidator();
+        user.setName(UserValidator.checkUserName (userRequest.getName().toLowerCase())); //getSurname().toLowerCase()
+        user.setSurname(UserValidator.checkUserSurname(userRequest.getSurname().toLowerCase()));
+        user.setEmail(UserValidator.checkUserEmail(userRequest.getEmail().toLowerCase()));
 
         return user;
     }
@@ -19,7 +22,7 @@ public class UserAssembler {
         UserResponse userResponse = new UserResponse();
         userResponse.setName(user.getName());
         userResponse.setSurname(user.getSurname());
-        userResponse.setEmail(user.getSurname());
+        userResponse.setEmail(user.getEmail());
         return userResponse;
     }
 
